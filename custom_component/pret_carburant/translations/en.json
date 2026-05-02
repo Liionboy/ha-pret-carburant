@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Preț Carburant România",
+        "description": "Select the county you want to monitor fuel prices for.\n\nData is sourced from [PretCarburant.ro](https://pretcarburant.ro) and updated every 2 hours.",
+        "data": {
+          "county": "County",
+          "scan_interval": "Update interval (minutes)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "This county is already configured."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Preț Carburant Options",
+        "data": {
+          "scan_interval": "Update interval (minutes)"
+        }
+      }
+    }
+  }
+}

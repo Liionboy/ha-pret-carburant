@@ -1,0 +1,27 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Preț Carburant România",
+        "description": "Selectează județul pentru care vrei să monitorizezi prețurile la carburanți.\n\nDatele sunt preluate de la [PretCarburant.ro](https://pretcarburant.ro) și sunt actualizate la fiecare 2 ore.",
+        "data": {
+          "county": "Județ",
+          "scan_interval": "Interval actualizare (minute)"
+        }
+      }
+    },
+    "abort": {
+      "already_configured": "Acest județ este deja configurat."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Opțiuni Preț Carburant",
+        "data": {
+          "scan_interval": "Interval actualizare (minute)"
+        }
+      }
+    }
+  }
+}

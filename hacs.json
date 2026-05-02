@@ -1,0 +1,8 @@
+{
+  "domain": "pret_carburant",
+  "name": "Preț Carburant România",
+  "documentation": "https://github.com/Liionboy/ha-pret-carburant",
+  "issue_tracker": "https://github.com/Liionboy/ha-pret-carburant/issues",
+  "homeassistant": "2024.1.0",
+  "render_readme": true
+}
