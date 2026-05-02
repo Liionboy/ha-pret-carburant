@@ -43,26 +43,35 @@ cards:
         icon: mdi:trophy
 
   # ===== TOP 5 STATII =====
-  - type: entities
-    title: "🏅 Top 5 cele mai ieftine stații"
-    show_header_toggle: false
-    entities:
-      - type: attribute
-        entity: sensor.cea_mai_ieftina_statie_bucuresti
-        attribute: top_10
-        name: "Top stații"
-        format: list
+  - type: markdown
+    content: >-
+      ### 🏅 Top 5 cele mai ieftine stații
+
+      {% set stations = state_attr('sensor.cea_mai_ieftina_statie_bucuresti', 'top_10') %}
+      {% if stations %}
+      {% for s in stations[:5] %}
+      **{{ s.rank }}. {{ s.name }}**
+      📍 {{ s.address }}
+      ⛽ {{ s.benzina_95 or '—' }} lei | 🛢️ {{ s.motorina or '—' }} lei | 🔥 {{ s.gpl or '—' }} lei
+
+      {% endfor %}
+      {% else %}
+      *Nu sunt date disponibile*
+      {% endif %}
 
   # ===== COMPARATIE RETELE =====
-  - type: entities
-    title: "📊 Comparație pe rețele"
-    show_header_toggle: false
-    entities:
-      - type: attribute
-        entity: sensor.retele_carburanti_bucuresti
-        attribute: networks
-        name: "Rețele"
-        format: list
+  - type: markdown
+    content: >-
+      ### 📈 Comparație pe rețele
+
+      {% set networks = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+      {% if networks %}
+      | Rețea | Stații | Benzină 95 | Motorină | GPL |
+      |-------|--------|------------|----------|-----|
+      {% for n in networks %}
+      | **{{ n.name }}** | {{ n.stations }} | {{ n.benzina_95 or '—' }} lei | {{ n.motorina or '—' }} lei | {{ n.gpl or '—' }} lei |
+      {% endfor %}
+      {% endif %}
 
   # ===== COST PLIN 50L =====
   - type: markdown

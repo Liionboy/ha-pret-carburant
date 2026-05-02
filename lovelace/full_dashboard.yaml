@@ -96,15 +96,21 @@ views:
             }
 
       # ===== TOP 5 STATII =====
-      - type: entities
-        title: "🏅 Top 5 cele mai ieftine stații"
-        show_header_toggle: false
-        entities:
-          - type: attribute
-            entity: sensor.cea_mai_ieftina_statie_bucuresti
-            attribute: top_10
-            name: "Top stații"
-            format: list
+      - type: markdown
+        content: >-
+          ### 🏅 Top 5 cele mai ieftine stații
+
+          {% set stations = state_attr('sensor.cea_mai_ieftina_statie_bucuresti', 'top_10') %}
+          {% if stations %}
+          {% for s in stations[:5] %}
+          **{{ s.rank }}. {{ s.name }}**
+          📍 {{ s.address }}
+          ⛽ {{ s.benzina_95 or '—' }} lei | 🛢️ {{ s.motorina or '—' }} lei | 🔥 {{ s.gpl or '—' }} lei
+
+          {% endfor %}
+          {% else %}
+          *Nu sunt date disponibile*
+          {% endif %}
 
       # ===== COMPARATIE RETELE =====
       - type: custom:mushroom-template-card
