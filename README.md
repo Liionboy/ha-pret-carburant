@@ -26,7 +26,7 @@ Datele provin din **Monitorul Prețurilor (ANPC / Consiliul Concurenței)** și 
 
 ### Manual
 
-1. Copiază directorul `custom_component/pret_carburant` în `config/custom_component/`
+1. Copiază directorul `custom_components/pret_carburant` în `config/custom_components/`
 2. Restart Home Assistant
 
 ## ⚙️ Configurare
