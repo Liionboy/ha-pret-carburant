@@ -1,182 +1,276 @@
 type: vertical-stack
 cards:
-  # ===== HEADER =====
+  # ===== HEADER TRICOLOR =====
   - type: custom:mushroom-template-card
-    primary: "⛽ Preț Carburant {{ state_attr('sensor.pret_benzina_95_bucuresti', 'county') }}"
+    primary: "⛽ Preț Carburant București"
     secondary: >-
-      🏪 {{ state_attr('sensor.pret_benzina_95_bucuresti', 'station_count') }} benzinării monitorizate
-      | 🕐 Actualizat: {{ as_timestamp(state_attr('sensor.pret_benzina_95_bucuresti', 'updated_at')) | timestamp_custom('%d %b %H:%M') }}
+      🏪 {{ state_attr('sensor.benzina_standard_95_bucuresti', 'station_count') }} benzinării
+      | 🕐 {{ as_timestamp(state_attr('sensor.benzina_standard_95_bucuresti', 'updated_at')) | timestamp_custom('%H:%M') }}
     icon: mdi:gas-station
-    icon_color: blue
+    icon_color: white
     card_mod:
       style: |
         ha-card {
           background: linear-gradient(135deg, #002B7F 0%, #002B7F 33%, #FCD116 33%, #FCD116 66%, #CE1126 66%, #CE1126 100%);
           color: white;
           --card-primary-font-color: white;
-          --card-secondary-font-color: rgba(255,255,255,0.85);
-          border-radius: 12px;
+          --card-secondary-font-color: rgba(255,255,255,0.9);
+          border-radius: 14px;
+          padding: 4px 0;
         }
 
-  # ===== PRINCIPAL PRICES =====
-  - type: custom:mushroom-template-card
-    primary: "Benzină 95"
-    secondary: >-
-      {{ states('sensor.pret_benzina_95_bucuresti') }} lei/L
-      — Minim la {{ state_attr('sensor.pret_benzina_95_bucuresti', 'cheapest_station') }}
-    icon: mdi:fuel
-    icon_color: green
-    badge_icon: mdi:trending-down
-    badge_color: green
-    card_mod:
-      style: |
-        ha-card {
-          --card-primary-font-size: 18px;
-          --card-secondary-font-size: 13px;
-          border-left: 4px solid #4CAF50;
-        }
+  # ===== PRETURI PE SCURT (GLANCE) =====
+  - type: glance
+    title: "💰 Prețuri minime azi"
+    show_state: true
+    show_name: true
+    entities:
+      - entity: sensor.benzina_standard_95_bucuresti
+        name: "Benzină 95"
+        icon: mdi:fuel
+      - entity: sensor.motorina_standard_bucuresti
+        name: "Motorină"
+        icon: mdi:fuel-pump
+      - entity: sensor.gpl_auto_bucuresti
+        name: "GPL"
+        icon: mdi:fire
 
-  - type: custom:mushroom-template-card
-    primary: "Motorină"
-    secondary: >-
-      {{ states('sensor.pret_motorina_bucuresti') }} lei/L
-      — Minim la {{ state_attr('sensor.pret_motorina_bucuresti', 'cheapest_station') }}
-    icon: mdi:fuel-pump
-    icon_color: orange
-    badge_icon: mdi:trending-down
-    badge_color: orange
-    card_mod:
-      style: |
-        ha-card {
-          --card-primary-font-size: 18px;
-          --card-secondary-font-size: 13px;
-          border-left: 4px solid #FF9800;
-        }
+  # ===== PREMIUM PE SCURT =====
+  - type: glance
+    title: "⭐ Premium"
+    show_state: true
+    show_name: true
+    entities:
+      - entity: sensor.benzina_premium_98_100_bucuresti
+        name: "Benzină 98/100"
+        icon: mdi:fuel
+      - entity: sensor.motorina_premium_bucuresti
+        name: "Motorină Premium"
+        icon: mdi:fuel-pump
 
-  - type: custom:mushroom-template-card
-    primary: "GPL"
-    secondary: >-
-      {{ states('sensor.pret_gpl_bucuresti') }} lei/L
-      — Minim la {{ state_attr('sensor.pret_gpl_bucuresti', 'cheapest_station') }}
-    icon: mdi:fire
-    icon_color: teal
-    badge_icon: mdi:trending-down
-    badge_color: teal
-    card_mod:
-      style: |
-        ha-card {
-          --card-primary-font-size: 18px;
-          --card-secondary-font-size: 13px;
-          border-left: 4px solid #009688;
-        }
-
-  - type: custom:mushroom-template-card
-    primary: "Benzină Premium"
-    secondary: >-
-      {{ states('sensor.pret_benzina_premium_bucuresti') }} lei/L
-      — Minim la {{ state_attr('sensor.pret_benzina_premium_bucuresti', 'cheapest_station') }}
-    icon: mdi:fuel
-    icon_color: purple
-    badge_icon: mdi:trending-down
-    badge_color: purple
-    card_mod:
-      style: |
-        ha-card {
-          --card-primary-font-size: 18px;
-          --card-secondary-font-size: 13px;
-          border-left: 4px solid #9C27B0;
-        }
-
-  - type: custom:mushroom-template-card
-    primary: "Motorină Premium"
-    secondary: >-
-      {{ states('sensor.pret_motorina_premium_bucuresti') }} lei/L
-      — Minim la {{ state_attr('sensor.pret_motorina_premium_bucuresti', 'cheapest_station') }}
-    icon: mdi:fuel-pump
-    icon_color: red
-    badge_icon: mdi:trending-down
-    badge_color: red
-    card_mod:
-      style: |
-        ha-card {
-          --card-primary-font-size: 18px;
-          --card-secondary-font-size: 13px;
-          border-left: 4px solid #F44336;
-        }
-
-  # ===== CHEAPEST STATION =====
+  # ===== CEA MAI IEFTINA STATIE =====
   - type: custom:mushroom-template-card
     primary: "🏆 Cea mai ieftină stație"
     secondary: >-
       {{ states('sensor.cea_mai_ieftina_statie_bucuresti') }}
-      — {{ state_attr('sensor.cea_mai_ieftina_statie_bucuresti', 'address') }}
+      — 📍 {{ state_attr('sensor.cea_mai_ieftina_statie_bucuresti', 'address') }}
     icon: mdi:trophy
     icon_color: amber
     card_mod:
       style: |
         ha-card {
-          background: linear-gradient(135deg, rgba(255,193,7,0.1) 0%, rgba(255,193,7,0.05) 100%);
-          border: 1px solid rgba(255,193,7,0.3);
-          border-radius: 12px;
-          --card-primary-font-size: 16px;
-          --card-secondary-font-size: 13px;
+          background: linear-gradient(135deg, rgba(255,193,7,0.15) 0%, rgba(255,193,7,0.05) 100%);
+          border: 1px solid rgba(255,193,7,0.4);
+          border-radius: 14px;
         }
 
-  # ===== TOP 10 STATIONS (Markdown) =====
-  - type: markdown
-    content: >-
-      ### 🏅 Top 10 cele mai ieftine stații
+  # ===== TOP 5 STATII =====
+  - type: entities
+    title: "🏅 Top 5 cele mai ieftine stații"
+    show_header_toggle: false
+    entities:
+      - type: attribute
+        entity: sensor.cea_mai_ieftina_statie_bucuresti
+        attribute: top_10
+        name: "Top stații"
+        format: list
 
-      {% set stations = state_attr('sensor.cea_mai_ieftina_statie_bucuresti', 'top_10') %}
-      {% if stations %}
-      | # | Stație | Adresă | Benzină 95 | Motorină | GPL |
-      |---|--------|--------|------------|----------|-----|
-      {% for s in stations %}
-      | {{ s.rank }} | **{{ s.name }}** | {{ s.address }} | {{ s.benzina_95 or '—' }} | {{ s.motorina or '—' }} | {{ s.gpl or '—' }} |
-      {% endfor %}
-      {% else %}
-      *Nu sunt date disponibile*
-      {% endif %}
-
-  # ===== NETWORK COMPARISON =====
-  - type: markdown
-    content: >-
-      ### 📊 Comparație prețuri pe rețele
-
+  # ===== COMPARATIE RETELE =====
+  - type: custom:mushroom-template-card
+    primary: "📊 Comparație pe rețele"
+    secondary: >-
       {% set networks = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
       {% if networks %}
-      | Rețele | Stații | Benzină 95 | Motorină | GPL |
-      |--------|--------|------------|----------|-----|
-      {% for n in networks %}
-      | **{{ n.name }}** | {{ n.stations }} | {{ n.benzina_95 or '—' }} | {{ n.motorina or '—' }} | {{ n.gpl or '—' }} |
-      {% endfor %}
-      {% else %}
-      *Nu sunt date disponibile*
+      {{ networks | length }} rețele monitorizate
       {% endif %}
+    icon: mdi:chart-bar
+    icon_color: teal
 
-  # ===== QUICK STATS =====
+  # ===== RETELE - CARDURI INDIVIDUALE =====
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        primary: "Petrom"
+        secondary: >-
+          {% set n = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+          {% if n %}{% for net in n %}{% if 'Petrom' in net.name %}
+          ⛽ {{ net.benzina_95 or '—' }} 🛢️ {{ net.motorina or '—' }}
+          {% endif %}{% endfor %}{% endif %}
+        icon: mdi:gas-station
+        icon_color: blue
+        card_mod:
+          style: |
+            ha-card { border-radius: 10px; --card-primary-font-size: 14px; --card-secondary-font-size: 11px; }
+
+      - type: custom:mushroom-template-card
+        primary: "OMV"
+        secondary: >-
+          {% set n = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+          {% if n %}{% for net in n %}{% if 'OMV' in net.name %}
+          ⛽ {{ net.benzina_95 or '—' }} 🛢️ {{ net.motorina or '—' }}
+          {% endif %}{% endfor %}{% endif %}
+        icon: mdi:gas-station
+        icon_color: red
+        card_mod:
+          style: |
+            ha-card { border-radius: 10px; --card-primary-font-size: 14px; --card-secondary-font-size: 11px; }
+
+      - type: custom:mushroom-template-card
+        primary: "Rompetrol"
+        secondary: >-
+          {% set n = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+          {% if n %}{% for net in n %}{% if 'Rompetrol' in net.name %}
+          ⛽ {{ net.benzina_95 or '—' }} 🛢️ {{ net.motorina or '—' }}
+          {% endif %}{% endfor %}{% endif %}
+        icon: mdi:gas-station
+        icon_color: yellow
+        card_mod:
+          style: |
+            ha-card { border-radius: 10px; --card-primary-font-size: 14px; --card-secondary-font-size: 11px; }
+
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-template-card
+        primary: "MOL"
+        secondary: >-
+          {% set n = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+          {% if n %}{% for net in n %}{% if 'MOL' in net.name %}
+          ⛽ {{ net.benzina_95 or '—' }} 🛢️ {{ net.motorina or '—' }} 🔥 {{ net.gpl or '—' }}
+          {% endif %}{% endfor %}{% endif %}
+        icon: mdi:gas-station
+        icon_color: green
+        card_mod:
+          style: |
+            ha-card { border-radius: 10px; --card-primary-font-size: 14px; --card-secondary-font-size: 11px; }
+
+      - type: custom:mushroom-template-card
+        primary: "Lukoil"
+        secondary: >-
+          {% set n = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+          {% if n %}{% for net in n %}{% if 'Lukoil' in net.name %}
+          ⛽ {{ net.benzina_95 or '—' }} 🛢️ {{ net.motorina or '—' }} 🔥 {{ net.gpl or '—' }}
+          {% endif %}{% endfor %}{% endif %}
+        icon: mdi:gas-station
+        icon_color: orange
+        card_mod:
+          style: |
+            ha-card { border-radius: 10px; --card-primary-font-size: 14px; --card-secondary-font-size: 11px; }
+
+      - type: custom:mushroom-template-card
+        primary: "SOCAR"
+        secondary: >-
+          {% set n = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
+          {% if n %}{% for net in n %}{% if 'SOCAR' in net.name or 'Socar' in net.name %}
+          ⛽ {{ net.benzina_95 or '—' }} 🛢️ {{ net.motorina or '—' }}
+          {% endif %}{% endfor %}{% endif %}
+        icon: mdi:gas-station
+        icon_color: purple
+        card_mod:
+          style: |
+            ha-card { border-radius: 10px; --card-primary-font-size: 14px; --card-secondary-font-size: 11px; }
+
+  # ===== COST PLIN 50L =====
+  - type: custom:mushroom-template-card
+    primary: "💵 Cost plin 50L"
+    secondary: >-
+      ⛽ Benzină 95: **{{ (states('sensor.benzina_standard_95_bucuresti') | float * 50) | round(0) }} lei**
+      🛢️ Motorină: **{{ (states('sensor.motorina_standard_bucuresti') | float * 50) | round(0) }} lei**
+      🔥 GPL: **{{ (states('sensor.gpl_auto_bucuresti') | float * 50) | round(0) }} lei**
+    icon: mdi:calculator
+    icon_color: blue
+    card_mod:
+      style: |
+        ha-card {
+          background: linear-gradient(135deg, rgba(33,150,243,0.1) 0%, rgba(33,150,243,0.05) 100%);
+          border: 1px solid rgba(33,150,243,0.3);
+          border-radius: 14px;
+        }
+
+  # ===== ECONOMIE GPL =====
   - type: custom:mushroom-template-card
     primary: "💡 Economie cu GPL"
     secondary: >-
-      {% set benzina = states('sensor.pret_benzina_95_bucuresti') | float(0) %}
-      {% set gpl = states('sensor.pret_gpl_bucuresti') | float(0) %}
+      {% set benzina = states('sensor.benzina_standard_95_bucuresti') | float(0) %}
+      {% set gpl = states('sensor.gpl_auto_bucuresti') | float(0) %}
       {% set economie = (benzina - gpl) * 50 %}
-      Plin 50L: {{ economie | round(0) }} lei economie față de benzină
+      Plin 50L: **{{ economie | round(0) }} lei** economie față de benzină
     icon: mdi:piggy-bank
     icon_color: green
     card_mod:
       style: |
         ha-card {
-          background: linear-gradient(135deg, rgba(76,175,80,0.1) 0%, rgba(76,175,80,0.05) 100%);
-          border: 1px solid rgba(76,175,80,0.3);
-          border-radius: 12px;
+          background: linear-gradient(135deg, rgba(76,175,80,0.15) 0%, rgba(76,175,80,0.05) 100%);
+          border: 1px solid rgba(76,175,80,0.4);
+          border-radius: 14px;
         }
 
-  - type: custom:mushroom-template-card
-    primary: "⛽ Cost plin 50L"
-    secondary: >-
-      Benzină: {{ (states('sensor.pret_benzina_95_bucuresti') | float(0) * 50) | round(0) }} lei
-      | Motorină: {{ (states('sensor.pret_motorina_bucuresti') | float(0) * 50) | round(0) }} lei
-      | GPL: {{ (states('sensor.pret_gpl_bucuresti') | float(0) * 50) | round(0) }} lei
-    icon: mdi:calculator
-    icon_color: blue
+  # ===== DETALII PRETURI =====
+  - type: entities
+    title: "📋 Detalii prețuri"
+    show_header_toggle: false
+    entities:
+      - type: attribute
+        entity: sensor.benzina_standard_95_bucuresti
+        attribute: min_price
+        name: "⛽ Benzină 95 — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.benzina_standard_95_bucuresti
+        attribute: avg_price
+        name: "⛽ Benzină 95 — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.benzina_standard_95_bucuresti
+        attribute: cheapest_station
+        name: "⛽ Benzină 95 — Stație minim"
+      - type: divider
+      - type: attribute
+        entity: sensor.motorina_standard_bucuresti
+        attribute: min_price
+        name: "🛢️ Motorină — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_standard_bucuresti
+        attribute: avg_price
+        name: "🛢️ Motorină — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_standard_bucuresti
+        attribute: cheapest_station
+        name: "🛢️ Motorină — Stație minim"
+      - type: divider
+      - type: attribute
+        entity: sensor.gpl_auto_bucuresti
+        attribute: min_price
+        name: "🔥 GPL — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.gpl_auto_bucuresti
+        attribute: avg_price
+        name: "🔥 GPL — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.gpl_auto_bucuresti
+        attribute: cheapest_station
+        name: "🔥 GPL — Stație minim"
+      - type: divider
+      - type: attribute
+        entity: sensor.benzina_premium_98_100_bucuresti
+        attribute: min_price
+        name: "⭐ Benzină Premium — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.benzina_premium_98_100_bucuresti
+        attribute: avg_price
+        name: "⭐ Benzină Premium — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_premium_bucuresti
+        attribute: min_price
+        name: "⭐ Motorină Premium — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_premium_bucuresti
+        attribute: avg_price
+        name: "⭐ Motorină Premium — Mediu"
+        suffix: " lei/L"

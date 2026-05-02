@@ -6,41 +6,32 @@ cards:
       # ⛽ Preț Carburant București
 
       ---
-      🏪 **{{ state_attr('sensor.pret_benzina_95_bucuresti', 'station_count') }}** benzinării monitorizate
-      | 🕐 Actualizat: **{{ as_timestamp(state_attr('sensor.pret_benzina_95_bucuresti', 'updated_at')) | timestamp_custom('%d %b %Y %H:%M') }}**
+      🏪 **{{ state_attr('sensor.benzina_standard_95_bucuresti', 'station_count') }}** benzinării monitorizate
+      | 🕐 Actualizat: **{{ as_timestamp(state_attr('sensor.benzina_standard_95_bucuresti', 'updated_at')) | timestamp_custom('%d %b %Y %H:%M') }}**
 
-  # ===== FUEL PRICES =====
-  - type: entities
+  # ===== PRETURI PE SCURT =====
+  - type: glance
     title: "💰 Prețuri minime azi"
-    show_header_toggle: false
+    show_state: true
+    show_name: true
     entities:
-      - entity: sensor.pret_benzina_95_bucuresti
-        name: "⛽ Benzină Standard 95"
-        secondary_info:
-          attribute: cheapest_station
+      - entity: sensor.benzina_standard_95_bucuresti
+        name: "Benzină 95"
         icon: mdi:fuel
-      - entity: sensor.pret_motorina_bucuresti
-        name: "🛢️ Motorină Standard"
-        secondary_info:
-          attribute: cheapest_station
+      - entity: sensor.motorina_standard_bucuresti
+        name: "Motorină"
         icon: mdi:fuel-pump
-      - entity: sensor.pret_gpl_bucuresti
-        name: "🔥 GPL Auto"
-        secondary_info:
-          attribute: cheapest_station
+      - entity: sensor.gpl_auto_bucuresti
+        name: "GPL"
         icon: mdi:fire
-      - entity: sensor.pret_benzina_premium_bucuresti
-        name: "⛽ Benzină Premium 98/100"
-        secondary_info:
-          attribute: cheapest_station
+      - entity: sensor.benzina_premium_98_100_bucuresti
+        name: "Benzină 98/100"
         icon: mdi:fuel
-      - entity: sensor.pret_motorina_premium_bucuresti
-        name: "🛢️ Motorină Premium"
-        secondary_info:
-          attribute: cheapest_station
+      - entity: sensor.motorina_premium_bucuresti
+        name: "Motorină Premium"
         icon: mdi:fuel-pump
 
-  # ===== CHEAPEST STATION =====
+  # ===== CEA MAI IEFTINA STATIE =====
   - type: entities
     title: "🏆 Cea mai ieftină stație"
     show_header_toggle: false
@@ -51,63 +42,112 @@ cards:
           attribute: address
         icon: mdi:trophy
 
-  # ===== PRICE DETAILS (Markdown) =====
-  - type: markdown
-    content: >-
-      ### 📊 Detalii prețuri
+  # ===== TOP 5 STATII =====
+  - type: entities
+    title: "🏅 Top 5 cele mai ieftine stații"
+    show_header_toggle: false
+    entities:
+      - type: attribute
+        entity: sensor.cea_mai_ieftina_statie_bucuresti
+        attribute: top_10
+        name: "Top stații"
+        format: list
 
-      {% set benzina = state_attr('sensor.pret_benzina_95_bucuresti', 'min_price') %}
-      {% set benzina_avg = state_attr('sensor.pret_benzina_95_bucuresti', 'avg_price') %}
-      {% set motorina = state_attr('sensor.pret_motorina_bucuresti', 'min_price') %}
-      {% set motorina_avg = state_attr('sensor.pret_motorina_bucuresti', 'avg_price') %}
-      {% set gpl = state_attr('sensor.pret_gpl_bucuresti', 'min_price') %}
-      {% set gpl_avg = state_attr('sensor.pret_gpl_bucuresti', 'avg_price') %}
+  # ===== COMPARATIE RETELE =====
+  - type: entities
+    title: "📊 Comparație pe rețele"
+    show_header_toggle: false
+    entities:
+      - type: attribute
+        entity: sensor.retele_carburanti_bucuresti
+        attribute: networks
+        name: "Rețele"
+        format: list
 
-      | Carburant | Minim | Mediu | Diferență |
-      |-----------|-------|-------|-----------|
-      | **Benzină 95** | {{ benzina }} lei | {{ benzina_avg }} lei | {{ (benzina_avg - benzina) | round(2) }} lei |
-      | **Motorină** | {{ motorina }} lei | {{ motorina_avg }} lei | {{ (motorina_avg - motorina) | round(2) }} lei |
-      | **GPL** | {{ gpl }} lei | {{ gpl_avg }} lei | {{ (gpl_avg - gpl) | round(2) }} lei |
-
-      ---
-
-      ### 🏅 Top 10 cele mai ieftine stații
-
-      {% set stations = state_attr('sensor.cea_mai_ieftina_statie_bucuresti', 'top_10') %}
-      {% if stations %}
-      | # | Stație | Adresă | Benzină 95 | Motorină | GPL |
-      |---|--------|--------|------------|----------|-----|
-      {% for s in stations %}
-      | {{ s.rank }} | **{{ s.name }}** | {{ s.address }} | {{ s.benzina_95 or '—' }} lei | {{ s.motorina or '—' }} lei | {{ s.gpl or '—' }} lei |
-      {% endfor %}
-      {% endif %}
-
-      ---
-
-      ### 📈 Comparație pe rețele
-
-      {% set networks = state_attr('sensor.retele_carburanti_bucuresti', 'networks') %}
-      {% if networks %}
-      | Rețea | Stații | Benzină 95 | Motorină | GPL |
-      |-------|--------|------------|----------|-----|
-      {% for n in networks %}
-      | **{{ n.name }}** | {{ n.stations }} | {{ n.benzina_95 or '—' }} lei | {{ n.motorina or '—' }} lei | {{ n.gpl or '—' }} lei |
-      {% endfor %}
-      {% endif %}
-
-  # ===== COST CALCULATOR =====
+  # ===== COST PLIN 50L =====
   - type: markdown
     content: >-
       ### 💵 Cost plin 50L
 
       | Carburant | Preț/L | Cost 50L |
       |-----------|--------|----------|
-      | **Benzină 95** | {{ states('sensor.pret_benzina_95_bucuresti') }} lei | **{{ (states('sensor.pret_benzina_95_bucuresti') | float * 50) | round(0) }} lei** |
-      | **Motorină** | {{ states('sensor.pret_motorina_bucuresti') }} lei | **{{ (states('sensor.pret_motorina_bucuresti') | float * 50) | round(0) }} lei** |
-      | **GPL** | {{ states('sensor.pret_gpl_bucuresti') }} lei | **{{ (states('sensor.pret_gpl_bucuresti') | float * 50) | round(0) }} lei** |
-      | **Benzină Premium** | {{ states('sensor.pret_benzina_premium_bucuresti') }} lei | **{{ (states('sensor.pret_benzina_premium_bucuresti') | float * 50) | round(0) }} lei** |
-      | **Motorină Premium** | {{ states('sensor.pret_motorina_premium_bucuresti') }} lei | **{{ (states('sensor.pret_motorina_premium_bucuresti') | float * 50) | round(0) }} lei** |
+      | **Benzină 95** | {{ states('sensor.benzina_standard_95_bucuresti') }} lei | **{{ (states('sensor.benzina_standard_95_bucuresti') | float * 50) | round(0) }} lei** |
+      | **Motorină** | {{ states('sensor.motorina_standard_bucuresti') }} lei | **{{ (states('sensor.motorina_standard_bucuresti') | float * 50) | round(0) }} lei** |
+      | **GPL** | {{ states('sensor.gpl_auto_bucuresti') }} lei | **{{ (states('sensor.gpl_auto_bucuresti') | float * 50) | round(0) }} lei** |
+      | **Benzină Premium** | {{ states('sensor.benzina_premium_98_100_bucuresti') }} lei | **{{ (states('sensor.benzina_premium_98_100_bucuresti') | float * 50) | round(0) }} lei** |
+      | **Motorină Premium** | {{ states('sensor.motorina_premium_bucuresti') }} lei | **{{ (states('sensor.motorina_premium_bucuresti') | float * 50) | round(0) }} lei** |
 
       ---
 
-      💡 **Economie cu GPL:** {{ ((states('sensor.pret_benzina_95_bucuresti') | float) - (states('sensor.pret_gpl_bucuresti') | float)) * 50 | round(0) }} lei per plin de 50L față de benzină
+      💡 **Economie cu GPL:** {{ ((states('sensor.benzina_standard_95_bucuresti') | float) - (states('sensor.gpl_auto_bucuresti') | float)) * 50 | round(0) }} lei per plin de 50L
+
+  # ===== DETALII PRETURI =====
+  - type: entities
+    title: "📋 Detalii prețuri"
+    show_header_toggle: false
+    entities:
+      - type: attribute
+        entity: sensor.benzina_standard_95_bucuresti
+        attribute: min_price
+        name: "⛽ Benzină 95 — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.benzina_standard_95_bucuresti
+        attribute: avg_price
+        name: "⛽ Benzină 95 — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.benzina_standard_95_bucuresti
+        attribute: cheapest_station
+        name: "⛽ Benzină 95 — Stație minim"
+      - type: divider
+      - type: attribute
+        entity: sensor.motorina_standard_bucuresti
+        attribute: min_price
+        name: "🛢️ Motorină — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_standard_bucuresti
+        attribute: avg_price
+        name: "🛢️ Motorină — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_standard_bucuresti
+        attribute: cheapest_station
+        name: "🛢️ Motorină — Stație minim"
+      - type: divider
+      - type: attribute
+        entity: sensor.gpl_auto_bucuresti
+        attribute: min_price
+        name: "🔥 GPL — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.gpl_auto_bucuresti
+        attribute: avg_price
+        name: "🔥 GPL — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.gpl_auto_bucuresti
+        attribute: cheapest_station
+        name: "🔥 GPL — Stație minim"
+      - type: divider
+      - type: attribute
+        entity: sensor.benzina_premium_98_100_bucuresti
+        attribute: min_price
+        name: "⭐ Benzină Premium — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.benzina_premium_98_100_bucuresti
+        attribute: avg_price
+        name: "⭐ Benzină Premium — Mediu"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_premium_bucuresti
+        attribute: min_price
+        name: "⭐ Motorină Premium — Minim"
+        suffix: " lei/L"
+      - type: attribute
+        entity: sensor.motorina_premium_bucuresti
+        attribute: avg_price
+        name: "⭐ Motorină Premium — Mediu"
+        suffix: " lei/L"
